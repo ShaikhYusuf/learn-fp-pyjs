@@ -1,11 +1,11 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-lessons',
-  imports: [MatCardModule,CommonModule,RouterModule],
+  imports: [MatCardModule, RouterModule],
   templateUrl: './lessons.component.html',
   styleUrl: './lessons.component.css'
 })
