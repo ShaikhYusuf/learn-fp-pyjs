@@ -1,25 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { MatListModule } from '@angular/material/list';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [FormsModule, CommonModule, MatListModule ],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './quiz.component.html',
   styleUrls: ['./quiz.component.css']
 })
-export class QuizComponent {
+export class QuizComponent implements OnInit {
   quizzes: any[] = [];
   selectedAnswers: { [key: number]: number } = {};
   submitted = false;
   lessonId!: number;
 
   constructor(private http: HttpClient, private route: ActivatedRoute) { }
+
   ngOnInit(): void {
     this.route.params.subscribe(params => {
       this.lessonId = +params['lessonId'];
@@ -29,14 +28,14 @@ export class QuizComponent {
 
   loadQuizzes(lessonId: number): void {
     const url = `./lesson${lessonId}.json`;
-    this.http.get<any[]>(url).subscribe(
-      data => {
+    this.http.get<any[]>(url).subscribe({
+      next: (data) => {
         this.quizzes = data;
       },
-      error => {
+      error: (error) => {
         console.error('Error loading quiz data:', error);
       }
-    );
+    });
   }
 
   selectOption(quizId: number, optionIndex: number): void {
@@ -46,25 +45,15 @@ export class QuizComponent {
   }
 
   submitAnswers(): void {
+    if (Object.keys(this.selectedAnswers).length < this.quizzes.length) {
+      alert('Please answer all the questions before submitting.');
+      return;
+    }
     this.submitted = true;
   }
 
-  getClass(quizId: number, optionIndex: number): string {
-    if (!this.submitted) {
-      return this.selectedAnswers[quizId] === optionIndex ? 'highlight' : '';
-    }
-
-    const isCorrect = this.quizzes.find(quiz => quiz.id === quizId)?.answer === optionIndex;
-    const isSelected = this.selectedAnswers[quizId] === optionIndex;
-
-    if (isCorrect) {
-      return 'correct';
-    } else if (isSelected) {
-      return 'incorrect';
-    } else if (optionIndex === this.quizzes.find(quiz => quiz.id === quizId)?.answer) {
-      return 'correct-answer';
-    }
-
-    return '';
+  isCorrectOption(quiz: any, optionIndex: number): boolean {
+    if (!quiz) return false;
+    return quiz.answer === optionIndex || quiz.options[optionIndex - 1] === quiz.answer;
   }
 }

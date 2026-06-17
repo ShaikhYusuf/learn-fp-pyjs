@@ -13,23 +13,30 @@ import { Lessons10Component } from './features/lessons/lessons10/lessons10.compo
 import { Lessons6Component } from './features/lessons/lessons6/lessons6.component';
 import { Lessons7Component } from './features/lessons/lessons7/lessons7.component';
 import { QuizListComponent } from './quiz-list/quiz-list.component';
+import { RegisterComponent } from './features/register/register.component';
+import { AuthGuard } from './features/auth/auth.guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' }, // Default Home Page
-    { path: 'home', component: HomeComponent },
-    { path: 'lessons', component: LessonsComponent },
-    { path: 'les1', component: Lessons1Component },
-    { path: 'les2', component: Lessons2Component },
-    { path: 'les3', component: Lesson3Component },
-    { path: 'les4', component: Lesson4Component },
-    { path: 'les5', component: Lessons5Component },
-    { path: 'les6', component: Lessons6Component },
-    { path: 'les7', component: Lessons7Component },
-    { path: 'les8', component: Lessons8Component },
-    { path: 'les9', component: Lessons9Component },
-    { path: 'les10', component: Lessons10Component },
-    { path: 'quiz/:lessonId', component: QuizComponent },
-    { path: 'quiz-list', component: QuizListComponent },
-
-
+    { path: 'register', component: RegisterComponent },
+    {
+        path: '',
+        canActivate: [AuthGuard],
+        children: [
+            { path: '', redirectTo: 'lessons', pathMatch: 'full' },
+            { path: 'home', component: HomeComponent },
+            { path: 'lessons', component: LessonsComponent },
+            { path: 'les1', component: Lessons1Component },
+            { path: 'les2', component: Lessons2Component },
+            { path: 'les3', component: Lesson3Component },
+            { path: 'les4', component: Lesson4Component },
+            { path: 'les5', component: Lessons5Component },
+            { path: 'les6', component: Lessons6Component },
+            { path: 'les7', component: Lessons7Component },
+            { path: 'les8', component: Lessons8Component },
+            { path: 'les9', component: Lessons9Component },
+            { path: 'les10', component: Lessons10Component },
+            { path: 'quiz/:lessonId', component: QuizComponent },
+            { path: 'quiz-list', component: QuizListComponent }
+        ]
+    }
 ];
