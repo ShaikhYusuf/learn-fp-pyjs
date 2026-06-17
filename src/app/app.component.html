@@ -1,14 +1,51 @@
-<div class="navbar-container">
-  <nav class="navbar navbar-expand-lg custom-navbar">
-    <!-- Left Side Logo/Text -->
-    <a class="navbar-brand" routerLink="/home">Functional Programming</a>
-
-    <!-- Right Side Buttons -->
-    <div class="ms-auto">
-      <button class="btn btn-outline-primary me-2" routerLink="/lessons">Lessons</button>
-      <button class="btn btn-primary" routerLink="/quiz-list">Quiz</button>
+<div class="app-layout">
+  <!-- Sticky Header -->
+  <header class="app-header">
+    <div class="app-brand">
+      <button class="sidebar-toggle" (click)="toggleSidebar()" aria-label="Toggle Navigation">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="app-title">{{ siteTitle }}</span>
     </div>
-  </nav>
-</div>
+    <div class="header-actions">
+      <button mat-button (click)="navigate('/lessons')">
+        <mat-icon>home</mat-icon>
+        <span>Home</span>
+      </button>
+    </div>
+  </header>
 
-<router-outlet></router-outlet>
+  <div class="app-body">
+    <!-- Sidebar Backdrop for mobile -->
+    <div class="sidebar-backdrop" *ngIf="isSidebarActive" (click)="toggleSidebar()"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar" [class.sidebar-open]="isSidebarActive">
+      <nav class="sidebar-menu">
+        <div class="menu-item" *ngFor="let item of menuItems">
+          <div class="menu-link-wrapper" [class.active]="selectedLessonId === item.id">
+            <a (click)="selectLesson(item.id, item.url)" class="menu-link">
+              <mat-icon>{{ item.id === 'home' ? 'home' : 'bookmark' }}</mat-icon>
+              <span>{{ item.name }}</span>
+            </a>
+            
+            <!-- Submenu for Quizzes if active -->
+            <div class="lesson-submenus" *ngIf="item.quiz && selectedLessonId === item.id">
+              <a (click)="navigate('/' + item.quiz)" class="submenu-link">
+                <mat-icon>quiz</mat-icon>
+                <span>Quiz</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="app-content">
+      <div class="content-container">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>
